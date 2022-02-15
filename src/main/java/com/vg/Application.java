@@ -1,7 +1,6 @@
 package com.vg;
 
 import com.ib.client.EClientSocket;
-import com.ib.client.EJavaSignal;
 import com.ib.client.EReader;
 import com.ib.client.EReaderSignal;
 import com.vg.model.OsAlgoOption;
@@ -40,7 +39,6 @@ public class Application {
         }).start();
         Thread.sleep(1000);
 
-        //broker.getOptionChainBySymbol(receiver.getNextReqId(), "AAPL");
 
 
         // create a scanner so we can read the command-line input

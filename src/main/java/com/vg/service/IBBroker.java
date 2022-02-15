@@ -1,7 +1,9 @@
 package com.vg.service;
 
 import com.ib.client.Contract;
+import com.ib.client.ContractDetails;
 import com.ib.client.EClientSocket;
+import com.ib.client.Order;
 import com.vg.model.OsAlgoOption;
 
 import java.time.DateTimeException;
@@ -11,7 +13,7 @@ import java.util.Locale;
 
 public class IBBroker {
 
-    private EClientSocket client;
+    private final EClientSocket client;
 
     private static final String TWS_ADDRESS = "127.0.0.1";
     private static final int TWS_PORT = 7497;
@@ -62,10 +64,10 @@ public class IBBroker {
         client.reqContractDetails(reqId, contract);
     }
 
-    //SQ - $117 - CALL - Feb 11 2022 - 426 @ $0.78 A | $33.23 K | $114.59 | :OSwhite:
     public OsAlgoOption createOsAlgoOption(String alert) {
         String[] info = alert.trim().split("-", 5);
 
+        // TODO change to builder pattern
         OsAlgoOption osAlgoOption = new OsAlgoOption();
         osAlgoOption.setSymbol(info[0].trim());
         osAlgoOption.setStrike(Integer.parseInt(info[1].trim().substring(1)));
@@ -78,6 +80,15 @@ public class IBBroker {
         osAlgoOption.setCost(Double.parseDouble(cost));
 
         return osAlgoOption;
+    }
+
+    public Order createOrder(OsAlgoOption option) {
+        Order order = new Order();
+
+        //ContractDetails details
+
+        order.referenceContractId(520650186);
+        return null;
     }
 
     private String convertDateString(String dateString) {

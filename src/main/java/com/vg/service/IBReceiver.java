@@ -132,7 +132,9 @@ public class IBReceiver implements EWrapper {
 
     @Override
     public void contractDetails(int i, ContractDetails contractDetails) {
+
         System.out.println(EWrapperMsgGenerator.contractDetails(i, contractDetails));
+        // TODO store date in new class (IBDataStore)
 //        System.out.println("Request ID: " + i + "\n" +
 //                "Contract details: " + contractDetails.toString());
     }
