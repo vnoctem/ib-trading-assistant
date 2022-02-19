@@ -1,6 +1,7 @@
 package com.vg.service;
 
 import com.ib.client.*;
+import com.vg.store.IBDataStore;
 
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,12 @@ public class IBReceiver implements EWrapper {
 
     private final EReaderSignal readerSignal;
     private final EClientSocket clientSocket;
+    private final IBDataStore dataStore;
 
-    private int currentReqId = -1;
-
-    public IBReceiver() {
+    public IBReceiver(IBDataStore dataStore) {
         this.readerSignal = new EJavaSignal();
         this.clientSocket = new EClientSocket(this, readerSignal);
+        this.dataStore = dataStore;
     }
 
     public EClientSocket getClient() {
@@ -24,14 +25,6 @@ public class IBReceiver implements EWrapper {
 
     public EReaderSignal getSignal() {
         return readerSignal;
-    }
-
-    public int getCurrentReqId() {
-        return currentReqId;
-    }
-
-    public int getNextReqId() {
-        return currentReqId++;
     }
 
     @Override
@@ -126,17 +119,15 @@ public class IBReceiver implements EWrapper {
     }
 
     @Override
-    public void nextValidId(int i) {
-
+    public void nextValidId(int orderId) {
+        System.out.println(EWrapperMsgGenerator.nextValidId(orderId));
+        dataStore.setCurrentOrderId(orderId);
     }
 
     @Override
     public void contractDetails(int i, ContractDetails contractDetails) {
-
         System.out.println(EWrapperMsgGenerator.contractDetails(i, contractDetails));
-        // TODO store date in new class (IBDataStore)
-//        System.out.println("Request ID: " + i + "\n" +
-//                "Contract details: " + contractDetails.toString());
+        dataStore.setContractDetails(contractDetails);
     }
 
     @Override

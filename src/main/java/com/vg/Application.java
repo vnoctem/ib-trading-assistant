@@ -1,11 +1,13 @@
 package com.vg;
 
+import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
 import com.ib.client.EReader;
 import com.ib.client.EReaderSignal;
 import com.vg.model.OsAlgoOption;
 import com.vg.service.IBBroker;
 import com.vg.service.IBReceiver;
+import com.vg.store.IBDataStore;
 
 import java.util.Scanner;
 
@@ -14,18 +16,18 @@ public class Application {
 
     public static void main(String[] args) throws InterruptedException {
 
-        // Connect to TWS instance
-        IBReceiver receiver = new IBReceiver();
-
+        // Create necessary objects to connect to TWS instance
+        final IBDataStore dataStore = new IBDataStore();
+        final IBReceiver receiver = new IBReceiver(dataStore);
         final EClientSocket client = receiver.getClient();
         final EReaderSignal readerSignal = receiver.getSignal();
+        final EReader reader = new EReader(client, readerSignal);
+        final IBBroker broker = new IBBroker(client, dataStore);
 
-        IBBroker broker = new IBBroker(client);
-
+        // Select live or paper trading
         broker.connectToPaperTrading();
 
-        final EReader reader = new EReader(client, readerSignal);
-
+        // Start reading incoming messages
         reader.start();
         new Thread(() -> {
             while (client.isConnected()) {
@@ -39,22 +41,35 @@ public class Application {
         }).start();
         Thread.sleep(1000);
 
-
-
-        // create a scanner so we can read the command-line input
+        // Create a scanner so we can read the command-line input
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter alert: ");
-        String alert = scanner.nextLine();
+        boolean isRunning = true;
 
-        OsAlgoOption option = broker.createOsAlgoOption(alert);
-        System.out.println(option.toString());
+        while (isRunning) {
+            // Read alert
+            System.out.print("Enter alert: ");
+            String alert = scanner.nextLine();
 
-        broker.getOptionChain(receiver.getNextReqId(), option);
+            // Create Option
+            OsAlgoOption option = broker.createOsAlgoOption(alert);
+            System.out.println(option.toString()); // TODO debugging
 
-//        System.out.print("Enter your age ? ");
-//        int age = scanner.nextInt();
+            // Get Option details
+            broker.getOptionDetails(dataStore.getNextOrderId(), option);
 
-        //Print all name, age etc
+            // Create buying order
+            //dataStore.getContractDetails().contract()
+
+            // Place order
+            //client.placeOrder(dataStore.getNextOrderId(), );
+
+            if (scanner.nextLine().equalsIgnoreCase("exit")) {
+                isRunning = false;
+            }
+        }
+
+        System.out.println("Exiting");
+        System.exit(0);
     }
 
 }
