@@ -1,16 +1,17 @@
 package com.vg.factory;
 
 import com.ib.client.Order;
+import com.vg.model.IBOrder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class IBOrder {
+public class IBOrderFactory {
 
 
-    public static List<Order> createBracketOrder(int parentOrderId, String action, double quantity, double limitPrice, double takeProfitLimitPrice, double stopLossPrice) {
+    public static List<IBOrder> createBracketOrder(int parentOrderId, String action, double quantity, double limitPrice, double takeProfitLimitPrice, double stopLossPrice) {
         //This will be our main or "parent" order
-        Order parent = new Order();
+        IBOrder parent = new IBOrder();
         parent.orderId(parentOrderId);
         parent.action(action);
         parent.orderType("LMT");
@@ -20,7 +21,7 @@ public class IBOrder {
         //The LAST CHILD will have it set to true.
         parent.transmit(false);
 
-        Order takeProfit = new Order();
+        IBOrder takeProfit = new IBOrder();
         takeProfit.orderId(parent.orderId() + 1);
         takeProfit.action(action.equals("BUY") ? "SELL" : "BUY");
         takeProfit.orderType("LMT");
@@ -29,7 +30,7 @@ public class IBOrder {
         takeProfit.parentId(parentOrderId);
         takeProfit.transmit(false);
 
-        Order stopLoss = new Order();
+        IBOrder stopLoss = new IBOrder();
         stopLoss.orderId(parent.orderId() + 2);
         stopLoss.action(action.equals("BUY") ? "SELL" : "BUY");
         stopLoss.orderType("STP");
@@ -41,7 +42,7 @@ public class IBOrder {
         //to activate all its predecessors
         stopLoss.transmit(true);
 
-        List<Order> bracketOrder = new ArrayList<>();
+        List<IBOrder> bracketOrder = new ArrayList<>();
         bracketOrder.add(parent);
         bracketOrder.add(takeProfit);
         bracketOrder.add(stopLoss);

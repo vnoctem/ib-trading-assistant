@@ -3,18 +3,19 @@ package com.vg.service;
 import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
 import com.ib.client.Order;
+import com.vg.factory.IBOrderFactory;
+import com.vg.model.IBOrder;
 import com.vg.model.OsAlgoOption;
-import com.vg.store.IBDataStore;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 public class IBBroker {
 
     private final EClientSocket client;
-    private final IBDataStore dataStore;
 
     private static final String TWS_ADDRESS = "127.0.0.1";
     private static final int TWS_PORT = 7497;
@@ -25,9 +26,8 @@ public class IBBroker {
     private static final String SELL = "SELL";
 
 
-    public IBBroker(EClientSocket client, IBDataStore dataStore) {
+    public IBBroker(EClientSocket client) {
         this.client = client;
-        this.dataStore = dataStore;
     }
 
     public void connect() {
@@ -55,16 +55,17 @@ public class IBBroker {
         client.reqContractDetails(reqId, contract);
     }
 
-    public void getOptionDetails(int reqId, OsAlgoOption option) {
+    public void getContractDetails(int reqId, OsAlgoOption option) {
         Contract contract = new Contract();
 
         contract.symbol(option.getSymbol());
         contract.secType("OPT");
-        contract.exchange("SMART");
         contract.currency("USD");
-        contract.right(option.getSide());
-        contract.strike(option.getStrike());
+        contract.exchange("SMART");
         contract.lastTradeDateOrContractMonth(option.getDate());
+        contract.strike(option.getStrike());
+        contract.right(option.getSide());
+        contract.multiplier("100");
 
         client.reqContractDetails(reqId, contract);
     }
@@ -92,23 +93,26 @@ public class IBBroker {
         return osAlgoOption;
     }
 
-//    public Order createOrder(double quantity, OsAlgoOption option) {
-//        /**
-//         * Rules to create order:
-//         * 1. Limit price must be equals or below alert price
-//         * 2. Take profit limit price must be +20%
-//         * 3. Stop loss limit price must be -50%
-//         */
-//
-//        Contract contract = dataStore.getContractDetails().contract();
-//
-//        IBOrderService.createBracketOrder(
-//                dataStore.getNextOrderId(),
-//                BUY,
-//                quantity,
-//
-//                );
-//    }
+    public static List<IBOrder> createOrders(int orderId, double quantity, OsAlgoOption option) {
+        /**
+         * Rules to create order:
+         * 1. Limit price must be equals or below alert price
+         * 2. Take profit limit price must be +20%
+         * 3. Stop loss limit price must be -50%
+         */
+
+        double takeProfitLimitPrice = Math.ceil((option.getCost() * 1.20) * 20) / 20;
+        double stopLossLimitPrice = Math.ceil((option.getCost() * 0.5) * 20) / 20;
+
+        return IBOrderFactory.createBracketOrder(
+                orderId,
+                BUY,
+                quantity,
+                option.getCost(),
+                takeProfitLimitPrice,
+                stopLossLimitPrice
+                );
+    }
 
     private String convertDateString(String dateString) {
         DateTimeFormatter formatter;
