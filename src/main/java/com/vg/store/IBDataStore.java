@@ -8,18 +8,19 @@ import com.vg.model.OsAlgoOption;
 public class IBDataStore {
 
     private int nextValidId = -1;
-    private ContractDetails contractDetails;
-    private OsAlgoOption option;
-
     private int currentParentOrderId = -1;
     private int currentTakeProfitOrderId = -1;
     private int currentStopLossOrderId = -1;
+
+    private ContractDetails contractDetails;
+    private Contract contract;
+    private OsAlgoOption option;
 
     private IBOrder parentOrder;
     private IBOrder takeProfitOrder;
     private IBOrder stopLossOrder;
 
-    private Contract contract;
+    private boolean isReadyForAlert = false;
 
     public ContractDetails getContractDetails() {return contractDetails;}
 
@@ -62,4 +63,8 @@ public class IBDataStore {
     public Contract getContract() {return contract;}
 
     public void setContract(Contract contract) {this.contract = contract;}
+
+    public boolean isReadyForAlert() {return isReadyForAlert;}
+
+    public void setReadyForAlert(boolean readyForAlert) {isReadyForAlert = readyForAlert;}
 }

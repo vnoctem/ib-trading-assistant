@@ -90,28 +90,26 @@ public class IBReceiver implements EWrapper {
                 i3,
                 s1,
                 v4));
-        if (i == dataStore.getCurrentParentOrderId() && s.equalsIgnoreCase("PreSubmitted")) {
-            IBOrder takeProfitOrder = dataStore.getTakeProfitOrder();
-            takeProfitOrder.transmit(true);
 
-            client.placeOrder(takeProfitOrder.orderId(), dataStore.getContract(), takeProfitOrder);
-            System.out.println("INFO - Take Profit Order placed: " + takeProfitOrder);
-
-//            IBOrder stopLossOrder = dataStore.getStopLossOrder();
+        // If parent order is PreSubmitted or Submitted, then place TakeProfit order
+//        if (i == dataStore.getCurrentParentOrderId() && s.equalsIgnoreCase("PreSubmitted")) {
+//            IBOrder takeProfitOrder = dataStore.getTakeProfitOrder();
+//            //takeProfitOrder.transmit(true);
 //
-            dataStore.setCurrentTakeProfitOrderId(takeProfitOrder.orderId());
+//            client.placeOrder(takeProfitOrder.orderId(), dataStore.getContract(), takeProfitOrder);
+//            System.out.println("INFO - Take Profit Order placed: " + takeProfitOrder);
+//
+//            dataStore.setCurrentTakeProfitOrderId(takeProfitOrder.orderId());
+//        }
+//
+//        // If take profit order is PreSubmitted or Submitted, then place StopLoss order
+//        if (i == dataStore.getCurrentTakeProfitOrderId() && s.equalsIgnoreCase("PreSubmitted")) {
+//            IBOrder stopLossOrder = dataStore.getStopLossOrder();
+//            stopLossOrder.transmit(true);
 //
 //            client.placeOrder(stopLossOrder.orderId(), dataStore.getContract(), stopLossOrder);
-//            System.out.println("INFO - Order placed: " + stopLossOrder);
-        }
-
-        if (i == dataStore.getCurrentTakeProfitOrderId() && s.equalsIgnoreCase("PreSubmitted")) {
-            IBOrder stopLossOrder = dataStore.getStopLossOrder();
-            stopLossOrder.transmit(true);
-
-            client.placeOrder(stopLossOrder.orderId(), dataStore.getContract(), stopLossOrder);
-            System.out.println("INFO - Stop Loss Order placed " + stopLossOrder);
-        }
+//            System.out.println("INFO - Stop Loss Order placed " + stopLossOrder);
+//        }
     }
 
     @Override
@@ -174,20 +172,12 @@ public class IBReceiver implements EWrapper {
 
         // Get Orders
         List<IBOrder> orders = IBBroker.createOrders(dataStore.getNextValidId(), 1, dataStore.getOption());
-        IBOrder parentOrder = orders.get(0);
-        dataStore.setCurrentParentOrderId(parentOrder.orderId());
 
-        IBOrder takeProfitOrder = orders.get(1);
-        dataStore.setTakeProfitOrder(takeProfitOrder);
-
-        IBOrder stopLossOrder = orders.get(2);
-        dataStore.setStopLossOrder(stopLossOrder);
-
-        parentOrder.transmit(true);
-
-        // Place order
-        client.placeOrder(parentOrder.orderId(), contract, parentOrder);
-        System.out.println("INFO - Parent Order placed: " + parentOrder);
+        // Place orders
+        for (IBOrder order : orders) {
+            client.placeOrder(order.orderId(), contract, order);
+            System.out.println("INFO - Order placed: " + order);
+        }
     }
 
     @Override

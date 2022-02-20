@@ -47,7 +47,7 @@ public class Application {
                 try {
                     reader.processMsgs();
                 } catch (Exception e) {
-                    System.out.println("Exception: " + e.getMessage());
+                    System.out.println("Thread exception: " + e.getMessage());
                     //client.cancelOrder(dataStore.getCurrentOrderId());
                 }
             }
@@ -72,26 +72,6 @@ public class Application {
             // Get Option details
             broker.getContractDetails(dataStore.getNextValidId(), option);
 
-//            // Get Contract
-//            Contract contract = dataStore.getContractDetails().contract();
-//
-//            // Get Orders
-//            List<Order> orders = broker.createOrders(dataStore.getNextValidId(), 1, option);
-//            Order parentOrder = orders.get(0);
-//            Order takeProfitOrder = orders.get(1);
-//            Order stopLossOrder = orders.get(2);
-//
-//            // Place orders
-//            client.placeOrder(dataStore.getNextValidId(), contract, stopLossOrder);
-//            System.out.println("INFO - Order placed: " + stopLossOrder.toString());
-//
-//            client.placeOrder(dataStore.getNextValidId(), contract, parentOrder);
-//            System.out.println("INFO - Order placed: " + parentOrder.toString());
-//
-//            client.placeOrder(dataStore.getNextValidId(), contract, takeProfitOrder);
-//            System.out.println("INFO - Order placed: " + takeProfitOrder.toString());
-
-
             if (scanner.nextLine().equalsIgnoreCase("exit")) {
                 isRunning = false;
             }
@@ -101,5 +81,9 @@ public class Application {
         System.out.println("Exiting");
         System.exit(0);
     }
+
+//    private void processMessages(EReader reader) {
+//        reader.processMsgs();
+//    }
 
 }
