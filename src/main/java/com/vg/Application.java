@@ -6,11 +6,9 @@ import com.vg.service.IBBroker;
 import com.vg.service.IBReceiver;
 import com.vg.store.IBDataStore;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class Application {
-
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -26,7 +24,7 @@ public class Application {
         // Connect to socket
         broker.connectToPaperTrading();
 
-        // Wait for validNextId callback to create EReader
+        // Wait for successful connection before continuing
         try {
             while (!client.isConnected()) {
                 // nothing
@@ -35,14 +33,20 @@ public class Application {
             System.out.println("Exception happened during connection: " + e.getMessage());
         }
 
-        System.out.println("INFO - Connection to socket done");
+        System.out.println("INFO - Connection to TWS instance is successful");
 
         final EReader reader = new EReader(client, readerSignal);
+
+        Scanner scanner = new Scanner(System.in);
 
         // Start reading incoming messages
         reader.start();
         new Thread(() -> {
             while (client.isConnected()) {
+                if (dataStore.isReadyForAlert()) {
+                    readAlert(dataStore, broker, scanner);
+                }
+
                 readerSignal.waitForSignal();
                 try {
                     reader.processMsgs();
@@ -54,36 +58,33 @@ public class Application {
         }).start();
         Thread.sleep(1000);
 
-        // Create a scanner so we can read the command-line input
-        Scanner scanner = new Scanner(System.in);
-        boolean isRunning = true;
-
-        while (isRunning) {
-            // Read alert
-            System.out.print("Enter alert: ");
-            String alert = scanner.nextLine();
-
-            // Create Option
-            OsAlgoOption option = broker.createOsAlgoOption(alert);
-            System.out.println(option.toString()); // TODO debugging
-
-            dataStore.setOption(option);
-
-            // Get Option details
-            broker.getContractDetails(dataStore.getNextValidId(), option);
-
-            if (scanner.nextLine().equalsIgnoreCase("exit")) {
-                isRunning = false;
-            }
-        }
-
-        broker.disconnect();
-        System.out.println("Exiting");
-        System.exit(0);
+        readAlert(dataStore, broker, scanner);
     }
 
-//    private void processMessages(EReader reader) {
-//        reader.processMsgs();
-//    }
+    private static void readAlert(IBDataStore dataStore, IBBroker broker, Scanner scanner) {
+        // Create a scanner so we can read the command-line input
+        //Scanner scanner = new Scanner(System.in);
+
+        // Read alert
+        System.out.print("Enter alert: ");
+        String alert = scanner.nextLine();
+
+        // Create Option
+        OsAlgoOption option = broker.createOsAlgoOption(alert);
+        System.out.println(option.toString()); // TODO debugging
+
+        dataStore.setOption(option);
+
+        // Get Option details (start trading flow)
+        broker.getContractDetails(dataStore.getNextValidId(), option);
+
+        if (scanner.nextLine().equalsIgnoreCase("exit")) {
+            broker.disconnect();
+            System.out.print("INFO - Client disconnected");
+            System.out.print("INFO - Exiting application");
+            System.exit(0);
+        }
+
+    }
 
 }

@@ -17,7 +17,7 @@ public class IBOrderFactory {
         parent.orderType("LMT");
         parent.totalQuantity(quantity);
         parent.lmtPrice(limitPrice);
-        //The parent and children orders will need this attribute set to false to prevent accidental executions.
+        //The parent and children orders will need this attribute set at false to prevent accidental executions.
         //The LAST CHILD will have it set to true.
         parent.transmit(false);
 

@@ -91,16 +91,12 @@ public class IBReceiver implements EWrapper {
                 s1,
                 v4));
 
-        // If parent order is PreSubmitted or Submitted, then place TakeProfit order
-//        if (i == dataStore.getCurrentParentOrderId() && s.equalsIgnoreCase("PreSubmitted")) {
-//            IBOrder takeProfitOrder = dataStore.getTakeProfitOrder();
-//            //takeProfitOrder.transmit(true);
-//
-//            client.placeOrder(takeProfitOrder.orderId(), dataStore.getContract(), takeProfitOrder);
-//            System.out.println("INFO - Take Profit Order placed: " + takeProfitOrder);
-//
-//            dataStore.setCurrentTakeProfitOrderId(takeProfitOrder.orderId());
-//        }
+        // If parent order is Submitted, then ready for next alert
+        if (i == dataStore.getCurrentParentOrderId() && s.equalsIgnoreCase("Submitted")) {
+            System.out.println("INFO - Parent order was submitted");
+
+            dataStore.setReadyForAlert(true);
+        }
 //
 //        // If take profit order is PreSubmitted or Submitted, then place StopLoss order
 //        if (i == dataStore.getCurrentTakeProfitOrderId() && s.equalsIgnoreCase("PreSubmitted")) {
@@ -172,6 +168,7 @@ public class IBReceiver implements EWrapper {
 
         // Get Orders
         List<IBOrder> orders = IBBroker.createOrders(dataStore.getNextValidId(), 1, dataStore.getOption());
+        dataStore.setCurrentParentOrderId(orders.get(0).orderId());
 
         // Place orders
         for (IBOrder order : orders) {
