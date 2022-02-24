@@ -6,7 +6,7 @@ import java.util.Objects;
 public class OsAlgoOption {
 
     private String symbol;
-    private int strike;
+    private double strike;
     private String side;
     private String date;
     private double cost;
@@ -16,9 +16,9 @@ public class OsAlgoOption {
 
     public void setSymbol(String symbol) {this.symbol = symbol;}
 
-    public int getStrike() {return strike;}
+    public double getStrike() {return strike;}
 
-    public void setStrike(int strike) {this.strike = strike;}
+    public void setStrike(double strike) {this.strike = strike;}
 
     public String getSide() {return side;}
 
@@ -41,7 +41,7 @@ public class OsAlgoOption {
         return this;
     }
 
-    public OsAlgoOption strike(int strike) {
+    public OsAlgoOption strike(double strike) {
         this.strike = strike;
         return this;
     }

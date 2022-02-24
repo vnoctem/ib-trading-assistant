@@ -81,7 +81,7 @@ public class IBBroker {
         // TODO change to builder pattern
         OsAlgoOption osAlgoOption = new OsAlgoOption();
         osAlgoOption.setSymbol(info[0].trim());
-        osAlgoOption.setStrike(Integer.parseInt(info[1].trim().substring(1)));
+        osAlgoOption.setStrike(Double.parseDouble(info[1].trim().substring(1)));
         osAlgoOption.setSide(info[2].trim());
         osAlgoOption.setDate(convertDateString(info[3].trim()));
 

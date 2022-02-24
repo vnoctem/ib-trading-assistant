@@ -52,7 +52,6 @@ public class Application {
                     reader.processMsgs();
                 } catch (Exception e) {
                     System.out.println("Thread exception: " + e.getMessage());
-                    //client.cancelOrder(dataStore.getCurrentOrderId());
                 }
             }
         }).start();
