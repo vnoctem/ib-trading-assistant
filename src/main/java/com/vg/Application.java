@@ -1,7 +1,7 @@
 package com.vg;
 
 import com.ib.client.*;
-import com.vg.model.OsAlgoOption;
+import com.vg.model.IBOption;
 import com.vg.service.IBBroker;
 import com.vg.service.IBReceiver;
 import com.vg.store.IBDataStore;
@@ -69,7 +69,7 @@ public class Application {
         String alert = scanner.nextLine();
 
         // Create Option
-        OsAlgoOption option = broker.createOsAlgoOption(alert);
+        IBOption option = broker.createIBOption(alert);
         System.out.println(option.toString()); // TODO debugging
 
         dataStore.setOption(option);

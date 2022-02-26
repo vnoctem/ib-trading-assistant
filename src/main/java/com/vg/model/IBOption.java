@@ -3,7 +3,7 @@ package com.vg.model;
 
 import java.util.Objects;
 
-public class OsAlgoOption {
+public class IBOption {
 
     private String symbol;
     private double strike;
@@ -36,39 +36,39 @@ public class OsAlgoOption {
 
     public void setStockPrice(double stockPrice) {this.stockPrice = stockPrice;}
 
-    public OsAlgoOption symbol(String symbol) {
+    public IBOption symbol(String symbol) {
         this.symbol = symbol;
         return this;
     }
 
-    public OsAlgoOption strike(double strike) {
+    public IBOption strike(double strike) {
         this.strike = strike;
         return this;
     }
 
-    public OsAlgoOption side(String side) {
+    public IBOption side(String side) {
         this.side = side;
         return this;
     }
 
-    public OsAlgoOption date(String date) {
+    public IBOption date(String date) {
         this.date = date;
         return this;
     }
 
-    public OsAlgoOption cost(double cost) {
+    public IBOption cost(double cost) {
         this.cost = cost;
         return this;
     }
 
-    public OsAlgoOption stockPrice(double stockPrice) {
+    public IBOption stockPrice(double stockPrice) {
         this.stockPrice = stockPrice;
         return this;
     }
 
     @Override
     public String toString() {
-        return "OsAlgoOption{" +
+        return "IBOption{" +
                 "symbol='" + symbol + '\'' +
                 ", strike=" + strike +
                 ", side='" + side + '\'' +
@@ -82,7 +82,7 @@ public class OsAlgoOption {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OsAlgoOption that = (OsAlgoOption) o;
+        IBOption that = (IBOption) o;
         return strike == that.strike && Double.compare(that.cost,
                 cost) == 0 && Double.compare(that.stockPrice, stockPrice) == 0 && Objects.equals(symbol,
                 that.symbol) && Objects.equals(side, that.side) && Objects.equals(date, that.date);

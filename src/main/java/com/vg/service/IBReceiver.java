@@ -2,6 +2,7 @@ package com.vg.service;
 
 import com.ib.client.*;
 import com.vg.model.IBOrder;
+import com.vg.model.IBOption;
 import com.vg.store.IBDataStore;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public class IBReceiver implements EWrapper {
     private final EReaderSignal readerSignal;
     private final EClientSocket client;
     private final IBDataStore dataStore;
+
+    private static final int MAX_COST_BASIS = 250;
 
     public IBReceiver(IBDataStore dataStore) {
         this.readerSignal = new EJavaSignal();
@@ -166,8 +169,18 @@ public class IBReceiver implements EWrapper {
         Contract contract = contractDetails.contract();
         dataStore.setContract(contract);
 
+
+
+        // Calculate quantity for a maximum cost basis if contract cost is less than that amount
+        IBOption option = dataStore.getOption();
+        int quantity = 1;
+
+        if ((option.getCost() * 100) < MAX_COST_BASIS) {
+            quantity = (int) (MAX_COST_BASIS / (option.getCost() * 100));
+        }
+
         // Get Orders
-        List<IBOrder> orders = IBBroker.createOrders(dataStore.getNextValidId(), 1, dataStore.getOption());
+        List<IBOrder> orders = IBBroker.createOrders(dataStore.getNextValidId(), quantity, dataStore.getOption());
         dataStore.setCurrentParentOrderId(orders.get(0).orderId());
 
         // Place orders

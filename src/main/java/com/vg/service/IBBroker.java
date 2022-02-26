@@ -2,10 +2,9 @@ package com.vg.service;
 
 import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
-import com.ib.client.Order;
 import com.vg.factory.IBOrderFactory;
 import com.vg.model.IBOrder;
-import com.vg.model.OsAlgoOption;
+import com.vg.model.IBOption;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -55,7 +54,7 @@ public class IBBroker {
         client.reqContractDetails(reqId, contract);
     }
 
-    public void getContractDetails(int reqId, OsAlgoOption option) {
+    public void getContractDetails(int reqId, IBOption option) {
         Contract contract = new Contract();
 
         contract.symbol(option.getSymbol());
@@ -71,29 +70,29 @@ public class IBBroker {
     }
 
     /**
-     * Create an OsAlgoOption from an OS Algo alert
+     * Create an IBOption from an OS Algo alert
      * @param alert OS Algo alert
-     * @return OsAlgoOption
+     * @return IBOption
      */
-    public OsAlgoOption createOsAlgoOption(String alert) {
+    public IBOption createIBOption(String alert) {
         String[] info = alert.trim().split("-", 5);
 
         // TODO change to builder pattern
-        OsAlgoOption osAlgoOption = new OsAlgoOption();
-        osAlgoOption.setSymbol(info[0].trim());
-        osAlgoOption.setStrike(Double.parseDouble(info[1].trim().substring(1)));
-        osAlgoOption.setSide(info[2].trim());
-        osAlgoOption.setDate(convertDateString(info[3].trim()));
+        IBOption IBOption = new IBOption();
+        IBOption.setSymbol(info[0].trim());
+        IBOption.setStrike(Double.parseDouble(info[1].trim().substring(1)));
+        IBOption.setSide(info[2].trim());
+        IBOption.setDate(convertDateString(info[3].trim()));
 
         String cost = info[4].trim().split("@")[1].trim();
         cost = cost.substring(cost.indexOf("$") + 1);
         cost = cost.substring(0, cost.indexOf("A") - 1);
-        osAlgoOption.setCost(Double.parseDouble(cost));
+        IBOption.setCost(Double.parseDouble(cost));
 
-        return osAlgoOption;
+        return IBOption;
     }
 
-    public static List<IBOrder> createOrders(int orderId, double quantity, OsAlgoOption option) {
+    public static List<IBOrder> createOrders(int orderId, double quantity, IBOption option) {
         /**
          * Rules to create order:
          * 1. Limit price must be equals or below alert price

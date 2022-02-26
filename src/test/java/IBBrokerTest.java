@@ -1,5 +1,5 @@
 import com.ib.client.EClientSocket;
-import com.vg.model.OsAlgoOption;
+import com.vg.model.IBOption;
 import com.vg.service.IBBroker;
 import org.junit.jupiter.api.Test;
 
@@ -23,22 +23,22 @@ public class IBBrokerTest {
         String alert5 = "FB - $207.50 - CALL - Feb 25 2022 - 181 @ $4.01 A | $72.74 K | $206.67 | :OSwhite:";
 
         // When
-        OsAlgoOption option1 = broker.createOsAlgoOption(alert1);
-        OsAlgoOption option2 = broker.createOsAlgoOption(alert2);
-        OsAlgoOption option3 = broker.createOsAlgoOption(alert3);
-        OsAlgoOption option4 = broker.createOsAlgoOption(alert4);
-        OsAlgoOption option5 = broker.createOsAlgoOption(alert5);
+        IBOption option1 = broker.createIBOption(alert1);
+        IBOption option2 = broker.createIBOption(alert2);
+        IBOption option3 = broker.createIBOption(alert3);
+        IBOption option4 = broker.createIBOption(alert4);
+        IBOption option5 = broker.createIBOption(alert5);
 
         // Then
-        OsAlgoOption expectedOption1 = new OsAlgoOption()
+        IBOption expectedOption1 = new IBOption()
                 .symbol("AMD").strike(100).side("PUT").date("20220128").cost(1.60);
-        OsAlgoOption expectedOption2 = new OsAlgoOption()
+        IBOption expectedOption2 = new IBOption()
                 .symbol("NUE").strike(104).side("PUT").date("20220121").cost(1.06);
-        OsAlgoOption expectedOption3 = new OsAlgoOption()
+        IBOption expectedOption3 = new IBOption()
                 .symbol("MU").strike(83).side("PUT").date("20220128").cost(1.61);
-        OsAlgoOption expectedOption4 = new OsAlgoOption()
+        IBOption expectedOption4 = new IBOption()
                 .symbol("V").strike(225).side("CALL").date("20220204").cost(2.70);
-        OsAlgoOption expectedOption5 = new OsAlgoOption()
+        IBOption expectedOption5 = new IBOption()
                 .symbol("FB").strike(207.5).side("CALL").date("20220225").cost(4.01);
 
         assertEquals(expectedOption1, option1);

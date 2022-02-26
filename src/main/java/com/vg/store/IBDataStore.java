@@ -3,7 +3,7 @@ package com.vg.store;
 import com.ib.client.Contract;
 import com.ib.client.ContractDetails;
 import com.vg.model.IBOrder;
-import com.vg.model.OsAlgoOption;
+import com.vg.model.IBOption;
 
 public class IBDataStore {
 
@@ -14,7 +14,7 @@ public class IBDataStore {
 
     private ContractDetails contractDetails;
     private Contract contract;
-    private OsAlgoOption option;
+    private IBOption option;
 
     private IBOrder parentOrder;
     private IBOrder takeProfitOrder;
@@ -32,9 +32,9 @@ public class IBDataStore {
 
     public void setNextValidId(int orderId) { nextValidId = orderId; }
 
-    public OsAlgoOption getOption() { return option; }
+    public IBOption getOption() { return option; }
 
-    public void setOption(OsAlgoOption option) { this.option = option; }
+    public void setOption(IBOption option) { this.option = option; }
 
     public int getCurrentParentOrderId() {return currentParentOrderId;}
 
