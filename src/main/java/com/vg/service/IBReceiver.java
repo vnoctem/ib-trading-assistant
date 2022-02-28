@@ -82,17 +82,6 @@ public class IBReceiver implements EWrapper {
             int i3,
             String s1,
             double v4) {
-//        System.out.println(EWrapperMsgGenerator.orderStatus(i,
-//                s,
-//                v,
-//                v1,
-//                v2,
-//                i1,
-//                i2,
-//                v3,
-//                i3,
-//                s1,
-//                v4));
 
         // If parent order is Submitted, then ready for next alert
         if (i == dataStore.getCurrentParentOrderId() && s.equalsIgnoreCase("Submitted")) {
